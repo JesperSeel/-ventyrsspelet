@@ -19,7 +19,7 @@ class Item:
         self.strength = strength
    
     def __str__(self): #printar ut namn och styrka
-        return(f"namn: {self.name} \nstyrka: {self.strength}")
+        return(f"{player.inv.index(self) + 1}: {self.name} \nstyrka: {self.strength}")
 
 
 player = Player([], 5, 0, 25)
@@ -103,6 +103,31 @@ def chest():
     holder = Item(give_name(), Strength())
     player.inv.append(holder)
     print(holder)
+    if len(player.inv) >= 6:
+        print(f"Ditt inventory är fullt, du måste välja släppa ett item")
+        view_inv()
+        print(f"\nVilket item vill du släppa, skriv mellan 1-6")
+        while True:
+            h = input("--> ")
+            if h == "1":
+                del(player.inv[0])
+                break
+            if h == "2":
+                del(player.inv[1])
+                break
+            if h == "3":
+                del(player.inv[2])
+                break
+            if h == "4":
+                del(player.inv[3])
+                break
+            if h == "5":
+                del(player.inv[4])
+                break
+            if h == "6":
+                del(player.inv[5])
+                break  
+            print("Felaktig inmatning försök igen")
     calc_str()
 
 
@@ -184,7 +209,7 @@ def play():
             else:
                 print("felaktig inmatning, försök igen")
         if player.lvl == 10:
-            print(f"n\Du har klarat spelet!")
+            print(f"\nDu har klarat spelet!")
             break
         if player.hp <= 0:
             print(f"\nDu dog")
@@ -209,3 +234,7 @@ while True:
             print("Felaktig input, försök igen")
     if g == 1:
         break
+
+
+
+
