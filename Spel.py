@@ -1,15 +1,20 @@
 import random
+import time
 
 
-class Player(): #Player classen
-    def __init__(self, inv, strength, lvl, hp):
+
+
+class Player():
+    def __init__(self, inv, strength, lvl, hp): #skapar attributerna
         self.inv = inv
         self.strength = strength
         self.lvl = lvl
         self.hp = hp
 
 
-    def __str__(self): #Printar player stats
+
+
+    def __str__(self): #printar stats
             ret_str_player = f"\nStr: {self.strength}, Hp: {self.hp}, Lvl: {self.lvl}"
             return ret_str_player
        
@@ -22,15 +27,20 @@ class Item:
         return(f"{player.inv.index(self) + 1}: {self.name} \nstyrka: {self.strength}")
 
 
-#Definerar player stats
-player = Player([], 5, 0, 30)
 
 
-def give_name():#Ger items ett slumpmässigt namn från namnlistan och tar sedan bort det namnet
+player = Player([], 5, 0, 20) #Ger player stats
+
+
+
+
+def give_name(): #ger random namn från en lista
     b = random.randint(0, len(item_names)-1)
     c = item_names[b]
     item_names.pop(b)
     return c
+
+
 
 
 def room_randomizer():
@@ -44,7 +54,9 @@ def room_randomizer():
             print("Ogiltigt svar, försök igen")
 
 
-    y = random.randint(1, 3)
+
+
+    y = random.randint(1, 3) #ger random nummer för att ge random rum
     if y == 1:
         print(f"\nDu hittade en kista")
         chest()
@@ -52,6 +64,8 @@ def room_randomizer():
         trap()
     if y == 3:
         combat()
+
+
 
 
 def combat():
@@ -73,25 +87,50 @@ def combat():
                 return print(f"Du förlorade över monster")
 
 
+
+
 def trap():
-    d = random.randint(1, 3)#Slumpar om det blir fälla 1, 2 eller 3
-    if d == 1: #Fälla 1
-        player.hp -= 1
-        return print(f"\nDu gick på en koreansk fälla, du förlorade 1 liv")
-    if d == 2: #Fälla 2
-        player.hp -= 2
-        return print(f"\nDu gick på en japansk fälla, du förlorade 2 liv")
-    if d == 3: #Fälla 3
-        player.hp -= 3
-        return print(f"\nDu gick på en vietnamesisk fälla, du förlorade 3 liv")
+    l = random.randint(0, len(think_fast)-1) #random nummer med längden av think_fast listan
+    start_time = time.time() #kollar tiden i början av funktionen
+    print(f"\nSkriv: ", end="")
+    print(think_fast[l]) #printer ett random ord från think_fast med l variabeln
+    while True:
+        m = input("--> ")
+        if time.time() - start_time >= 4: #jämför nuvarande tiden med tiden i början av funktionen
+            d = random.randint(1, 3)
+            if d == 1:
+                player.hp -= 1
+                print(f"\nDu var för långsam och förlorade 1 liv")
+                break
+            if d == 2:
+                player.hp -= 2
+                print(f"\nDu var för långsam och förlorade 2 liv")
+                break
+            if d == 3:
+                player.hp -= 3
+                print(f"\nDu var för långsam och förlorade 3 liv")
+                break
+        elif m == think_fast[l]: #Kollar om man skrivit rätt
+            print(f"\nDu undvek fällan")
+            break
+        else: print("Du skrev fel, försök igen")
 
 
-def Strength(): #Ger random strength till items
+
+
+           
+
+
+
+
+def Strength(): #ger random strength till items
     val = random.randint(1, 5)
     return val
 
 
-def calc_str(): #Kalkylerar player strength från inventory
+
+
+def calc_str(): #kalkylerar strength
     inv_str = 0
     player.strength = 5
     for i in player.inv:
@@ -100,18 +139,20 @@ def calc_str(): #Kalkylerar player strength från inventory
     player.strength = tot_str
 
 
-def chest(): #Ger player ett item, updaterar player strength och om player inventory är fullt måste du ta bort ett item
+
+
+def chest(): #Skapar ett item och lägger till i player inventory
     holder = Item(give_name(), Strength())
     player.inv.append(holder)
     print(holder)
-    if len(player.inv) >= 6:
+    if len(player.inv) >= 6: #Om inventoryt är fullt kommer man bli tvungen att ta bort ett item
         print(f"Ditt inventory är fullt, du måste välja släppa ett item")
         view_inv()
         print(f"\nVilket item vill du släppa, skriv mellan 1-6")
         while True:
-            h = input("--> ")
-            if h == "1":
-                del(player.inv[0])
+            h = input("--> ") #beroende på input tar den bort korresponderande item
+            if h == "1": 
+                del(player.inv[0]) 
                 break
             if h == "2":
                 del(player.inv[1])
@@ -132,16 +173,25 @@ def chest(): #Ger player ett item, updaterar player strength och om player inven
     calc_str()
 
 
+
+
 def view_inv(): #printar spelarens inventory
-    for i in player.inv:
-        print(i)
+    if not player.inv:
+        print("Ditt inventory är tomt.")
+    else:
+        for i in player.inv:
+            print(i)
 
 
-g = 0 #tillåter oss avsluta spelet när värdet ändras till 1
 
 
-#Lista över item namn
-item_names  = ["Shadowstrike Dagger",#namn till items
+
+
+g = 0 #tillåter oss avsluta en spelet när värdet ändras till 1
+
+
+#Lista på namn till items
+item_names  = ["Shadowstrike Dagger",
 "Thunderstorm Maul",
 "Frostbite Lance",
 "Venomspine Whip",
@@ -194,6 +244,19 @@ item_names  = ["Shadowstrike Dagger",#namn till items
 "Chads Thundercock"]
 
 
+#Ord till trap
+think_fast = ["for democracy", 
+"automatons",
+"terminds",
+"for superearth",
+"friendly fire",
+"malevolent creek",
+"->->^",
+"communist scum"]
+
+
+
+
 def play(): #ger en input så spelaren kan välja vad den vill göra
     while True:
         print(f"\nVad vill du göra nu\n1. Kolla ditt inventory\n2. Kolla dina stats\n3. Gå in ett nytt rum\nSvara 1, 2 eller 3")
@@ -210,31 +273,31 @@ def play(): #ger en input så spelaren kan välja vad den vill göra
                 break
             else:
                 print("felaktig inmatning, försök igen")
-        if player.lvl == 10: #avslutar play loop och därmet functionen
+        if player.lvl == 10: #avslutar play loop och därmed funktionen
             print(f"\nDu har klarat spelet!")
             break
         if player.hp <= 0:
-            print(f"\nDu dog") #avslutar play loop och därmet functionen
+            print(f"\nDu dog") #avslutar play loop och därmed funktionen
             break
 
 
-while True: #Spel loopen
-    print("Välkommen till Michael Jacksons dungeon")
+
+
+while True: #själva spelet startas och loopar om man vill spela flera gånger
+    print("Välkommen till The Dark Dungeon")
     play()
-    print(f"\nVill du spela igen? Ja eller Nej")
-    while True:
+    print(f"\nVill du spela igen? Ja eller Nej") #tillåter att spela igen
+    while True: #inmatnings säkerhet
         f = input("--> ")
         if f.lower() == "ja":
             print("Då kör vi!")
-            player = Player([], 5, 0, 30)
-            break
-        elif f.lower() == "nej":
+            player = Player([], 5, 0, 20) #resettar player stats
+            break #inmatnings loopen
+        elif f.lower() == "nej": #sätter g som 1 för att breaka loopen som spelar spelet
             print("Hej då")
             g = 1
             break
         else:
             print("Felaktig input, försök igen")
     if g == 1:
-        break
-
-
+        break #avbryter loopen hela koden
